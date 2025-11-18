@@ -9,9 +9,8 @@ module.exports={
         return mongoose.connect(config.BD)
          .then(conn => {
             this.connection = this.connection
-            console.log('LA CONEXION SE REALIZO CORRECTAMENTE');
+            console.log('LA CONEXIÓN SE REALIZO CORRECTAMENTE');
          })
          .catch(e =>(console.log(`Error en la conexion ${e}`)))
-         
     }
 }
