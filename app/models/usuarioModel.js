@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const usuarioSchema = mongoose.Schema ({
-    usuario:{
+   usuario:{
         type: String,
         required: true,
-        length: 50
+        length: 200
     },
     correo:{
         type: String,

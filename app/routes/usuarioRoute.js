@@ -4,5 +4,11 @@ const usuarioController = require('../controllers/usuarioController')
 
 router.get('/', usuarioController.buscarTodo)
     .post('/', usuarioController.agregarUsuario)// se deja exactamente igual, por que depende de get y post
+    .get('/:key/:value', usuarioController.buscarUsuario, usuarioController.mostrarUsuario)
+    .delete('/:key/:value', usuarioController.buscarUsuario, usuarioController.eliminarUsuario)
+    .put('/:key/:value', usuarioController.buscarUsuario, usuarioController.usuarioActualizar)
+
+
+
 
 module.exports=router;

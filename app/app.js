@@ -3,7 +3,7 @@ const app = express();
 const router = require('./routes/usuarioRoute');
 
 
-app.use(express.json())
+app.use(express.json());
 
 
 app.use('/usuario',router)

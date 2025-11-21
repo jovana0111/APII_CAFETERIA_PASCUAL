@@ -22,21 +22,25 @@ function agregarUsuario(req, res){// funcion con requerimiento y respuesta
     .catch(e =>{return  res.status(404).send({mensaje: `error al guardar ${e}`})})
 }
 
-async function buscarUsuario(req,res,next){ // sirve para en la misma sintaxis ejecutar dos funciones al mismo tiempo.
-   if (!req.body)  req.body={}// si el id existe
-    var consulta = {}
-    consulta[req.params.key] = req.params.value
-    usuarioModel.find(consulta)
-    .then(usuario =>{
-        if(!usuario.length) return next();
-        req.body.usuario = usuario
-        return next()
-    })
-    .catch(e =>{
-        req.body.e = e
-        return next()
-    })
+
+
+async function buscarUsuario(req, res, next) {
+    try {
+        const consulta = {};
+        consulta[req.params.key] = req.params.value;
+
+        const usuario = await usuarioModel.findOne(consulta);
+
+        if (!usuario) return next();
+
+        req.usuario = usuario; // ← AQUÍ ESTÁ EL CAMBIO IMPORTANTE
+        return next();
+    } catch (e) {
+        req.error = e;
+        return next();
+    }
 }
+
 
 
 function mostrarUsuario(req,res){
@@ -62,19 +66,22 @@ function eliminarUsuario(req,res){
 
 
 
-function usuarioActualizar(req,res){
-    var usuario = req.body.usuario // se crea una variable que almacena el valor de la joya con los datos de la funcion de buscarJoya
 
-    if(!usuario != !usuario.length){// aqui se valida que la joya exista y que tenga un valor, pero si los valotes son falsos, entonces no se actualiza
-        return res.status(404).send({mensaje: "No hay nada que actualizar"})
+function usuarioActualizar(req, res) {
+    if (!req.usuario) {
+        return res.status(404).send({ mensaje: "No hay nada que actualizar" });
     }
-    usuarioModel.updateOne(usuario[0],req.body)// se actualiza la joya con los datos que se tienen en el body [0], se toma en cero para que lea apartir de la primer posicion
-    .then(info =>{
-        return res.status(200).send({mensaje: "YA JALO"})
-        })
-    .catch(e =>{
-        return res.status(404).send({mensaje: "NO JALO :(", e})
+
+    usuarioModel.updateOne(
+        { _id: req.usuario._id },  // ← usamos el usuario encontrado
+        req.body                   // ← solo los campos enviados
+    )
+    .then(info => {
+        return res.status(200).send({ mensaje: "YA JALÓ", info });
     })
+    .catch(e => {
+        return res.status(404).send({ mensaje: "NO JALÓ :(", e });
+    });
 }
 
 
